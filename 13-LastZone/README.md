@@ -1,5 +1,9 @@
 # LAST ZONE — battle royale à steering behaviors
 
+> ## ▶️ **[JOUER MAINTENANT — https://warethedevils.github.io/LastZone-SteeringBehaviours/](https://warethedevils.github.io/LastZone-SteeringBehaviours/)**
+>
+> **Accès en 1 clic, rien à installer** : le jeu s'ouvre directement dans le navigateur (Chrome, Edge ou Firefox sur ordinateur ; la vue 3D demande WebGL). Clique sur **JOUER** dans le lobby : le tutoriel guide la première partie, la touche **H** affiche toutes les commandes.
+
 > Un battle royale complet (bus de combat, loot, tempête, construction, véhicules, équipes, faune, vue 3D)
 > dans lequel **tout ce qui bouge est un `Vehicle`** piloté par des *steering behaviors*, et dont les
 > adversaires sont des **bots à réseau de neurones qui évoluent d'une partie à l'autre**.

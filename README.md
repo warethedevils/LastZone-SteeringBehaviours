@@ -1,5 +1,9 @@
 # Steering Behaviors — M2 IA² (2026-2027)
 
+> ## ▶️ **[JOUER MAINTENANT — https://warethedevils.github.io/LastZone-SteeringBehaviours/](https://warethedevils.github.io/LastZone-SteeringBehaviours/)**
+>
+> **Accès en 1 clic, rien à installer** : le jeu s'ouvre directement dans le navigateur (Chrome, Edge ou Firefox sur ordinateur ; la vue 3D demande WebGL). Clique sur **JOUER** dans le lobby : le tutoriel guide la première partie, la touche **H** affiche toutes les commandes.
+
 Ce dépôt contient les exemples du cours de *steering behaviors* (dossiers `1-…` à `10-…`, fournis par l'enseignant)
 et **mon projet : LAST ZONE** (dossier [`13-LastZone`](13-LastZone/)).
 
