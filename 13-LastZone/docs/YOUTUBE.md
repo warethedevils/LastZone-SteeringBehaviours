@@ -16,13 +16,13 @@ LAST ZONE est un battle royale en vue de dessus et en 3D à la première personn
 0:07 Réglages : mode Duos, vue 3D
 0:13 Le menu d'aide (touche H)
 0:23 Le bus de combat et l'atterrissage
-0:28 Vue 3D à la première personne : combat, esquive, visée
-0:42 La faune : cerfs en harde, loup qui poursuit, corbeaux qui encerclent les combats
-0:56 Mode équipe : ordres d'escouade (boids) et réanimation
-1:13 Véhicules : la jeep et le quad
-1:27 Le Labo des comportements (BehaviorManager visible)
-1:44 Les cerveaux : évolution des bots
-1:54 Conclusion
+0:30 Vue 3D à la première personne : combat, esquive, visée
+0:43 La faune : cerfs en harde, loup qui poursuit, corbeaux qui encerclent les combats
+0:57 Mode équipe : ordres d'escouade (boids) et réanimation
+1:14 Véhicules : la jeep et le quad
+1:28 Le Labo des comportements (BehaviorManager visible)
+1:45 Les cerveaux : évolution des bots et courbe d'apprentissage
+1:55 Conclusion
 
 🧠 Ce qui est mis en œuvre
 • Steering behaviors de base dans la classe Vehicle ; comportements personnalisés et combinaisons dans les sous-classes
