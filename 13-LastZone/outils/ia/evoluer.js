@@ -140,6 +140,7 @@ async function main() {
     generationsEvolution: (previous.generationsEvolution || 0) + generations,
     avantage: Number((scored[0].rules - scored[0].neural).toFixed(2)),
     avantageReseauSeul: Number((isolated.rules - isolated.neural).toFixed(2)),
+    courbe: history.map(h => [h.gen, h.neural, h.rules]),          // classement moyen des réseaux et des règles à chaque génération (affiché dans le lobby)
     reseau: champion.reseau.toJSON(3),
     genes: champion.genome.genes
   });
