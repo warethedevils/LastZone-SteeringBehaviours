@@ -355,16 +355,28 @@ valeurs **en direct** ; `resetConfig()` les remet à zéro avant chaque match.
 
 ## 11. MON EXPÉRIENCE
 
-> Les parties 1 et 5 sont personnelles : **à écrire dans tes mots avant le rendu**. Les parties 2 à 4 décrivent ce
-> qui a réellement été fait dans le code.
+### 1. Pourquoi ce jeu ?
 
-### 1. Pourquoi ce jeu ? *(à écrire)*
+Je voulais un projet où les steering behaviors ne soient pas une démonstration isolée, mais ce qui fait vivre tout un
+monde. Mes deux premières idées — un essaim, puis un noyau à défendre — montraient un comportement à la fois et
+étaient trop simples : on en faisait le tour en quelques minutes. Je les ai abandonnées pour viser quelque chose de
+plus ambitieux, un jeu complet dans l'esprit des battle royale à loot comme Fortnite.
 
-`À COMPLÉTER : pourquoi un battle royale, ce qui t'a plu, ce que tu voulais montrer.`
+J'ai choisi ce genre parce qu'il oblige à utiliser presque tout le cours dans la même partie : **poursuivre et fuir**
+(les loups, les cerfs, les joueurs), **arriver** au butin sans le dépasser, **éviter** les arbres et les murs, **errer**,
+**se déplacer en groupe** (hardes, bandes de corbeaux, escouades en boids), **suivre un chemin** (le bus de combat).
+Chaque situation de jeu appelle naturellement un comportement, ce qui rend le résultat lisible à l'écran.
 
-Ce que le dépôt montre : deux idées précédentes (un essaim, puis un noyau à défendre) ont été écartées — trop
-simples et trop peu développées. Le battle royale permet d'utiliser **tous** les comportements du cours dans un même
-monde et de poser une vraie question d'IA : des adversaires qui apprennent.
+Je tenais aussi à ce que les adversaires soient plus que des règles écrites à la main. Chaque bot possède donc un
+**réseau de neurones** qui choisit son état d'action et règle ses forces de steering, et la population **évolue** d'une
+partie à l'autre. Le réseau ne déplace jamais un bot : il décide *quoi faire*, et ce sont les steering behaviors qui
+décident *comment bouger*. J'y vois le prolongement naturel du cours — la sélection de l'action de Reynolds, confiée à
+un cerveau qui apprend.
+
+Enfin, ce qui me motive dans ce projet, c'est de pouvoir **voir** les comportements : le Labo des comportements
+dessine chaque force comme une flèche et laisse régler les poids en direct, et la vue 3D permet de les vivre de
+l'intérieur de la partie. Mon objectif était de montrer que des règles locales très simples, bien composées, suffisent à
+produire un monde crédible.
 
 ### 2. Quels comportements, et pourquoi
 
@@ -407,10 +419,9 @@ le Labo, où chaque comportement est une flèche.
 - **Tests dépendants de la graine** : ajouter des véhicules ou de la faune change la suite des tirages ; les
   scénarios déterministes désactivent la faune (`faune: false`).
 
-### 5. Outils *(à confirmer)*
+### 5. Outils
 
-- **IDE / environnement** : Claude Code dans l'application de bureau Claude (onglet Code). `À COMPLÉTER si un autre
-  éditeur a été utilisé.`
+- **IDE / environnement** : Claude Code dans l'application de bureau Claude (onglet Code).
 - **Modèle IA** : Claude Sonnet 5.5 (`claude-sonnet-5-5`).
 - **Fichiers pour assistants IA** : [`CLAUDE.md`](CLAUDE.md) (ce dossier), [`../AGENTS.md`](../AGENTS.md) et
   [`../ARCHITECTURE.md`](../ARCHITECTURE.md) (règles du dépôt).
