@@ -290,10 +290,27 @@ revenir aux comportements d'origine. La logique est dans `src/steering/reglages.
 
 ### Résultats
 
-`node outils/ia/evaluer.js 24` (24 matchs, 12 réseaux contre 12 bots à règles dans les mêmes parties) :
-**classement moyen 11,6 pour les réseaux contre 13,4 pour les règles**, 16 victoires contre 8. L'avance est plus
-faible qu'avant l'ajout des véhicules, de la faune et des grenades (le champion a été entraîné sans eux) :
-ré-entraîner avec `outils/ia/evoluer.js` est la suite logique.
+`node outils/ia/evaluer.js 40` (40 matchs identiques, 12 réseaux contre 12 bots à règles dans la même partie) :
+
+| Cerveau | Classement moyen — réseaux | Classement moyen — règles | Victoires réseaux / règles |
+|---|---|---|---|
+| **Champion conservé** (celui du jeu) | **11,57** | 13,43 | **22** / 18 |
+| Nouveau candidat du ré-entraînement | 11,87 | 13,13 | 22 / 18 |
+
+Le champion conservé gagne donc **près de 2 places d'avance** sur les règles (11,57 contre 13,43). À titre d'indication, le test final du ré-entraînement, avec des personnalités entièrement aléatoires, ne donnait qu'environ 0,3 place d'avance au nouveau candidat (12,37 contre 12,63) : la personnalité héritée du champion (agressivité, précision, réflexes) semble compter autant que le réseau lui-même — c'est une hypothèse, pas une mesure isolée.
+
+#### Courbe d'apprentissage (ré-entraînement hors ligne)
+
+Le dernier ré-entraînement (`outils/ia/evoluer.js 40 48 3` : 40 générations, 48 cerveaux, 3 tours, véhicules, faune et grenades inclus) a mesuré à chaque génération le classement moyen des réseaux et des règles. La courbe est affichée dans l'onglet **Cerveaux** du jeu (`outils/ia/courbe_apprentissage.json`).
+
+| Génération | 1 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 |
+|---|---|---|---|---|---|---|---|---|---|
+| Réseaux | 11,85 | 11,54 | 12,45 | 11,76 | 12,90 | 11,24 | 11,81 | 11,83 | 11,68 |
+| Règles | 13,15 | 13,46 | 12,55 | 13,24 | 12,10 | 13,76 | 13,19 | 13,17 | 13,32 |
+
+Moyenne des 5 premières générations : réseaux 11,72 / règles 13,28 (avance 1,57). Moyenne des 5 dernières : réseaux 11,56 / règles 13,44 (avance **1,89**). **Lecture honnête :** l'avance progresse légèrement (+0,3 place), mais la courbe est très bruitée (un seul match par groupe et par génération) ; le champion de départ était déjà le fruit d'une première neuroévolution, donc il reste peu de marge. Le nouveau candidat n'a pas battu le champion existant sur 40 matchs identiques : **le champion n'a pas été remplacé**.
+
+Pistes pour aller plus loin : plus de matchs par génération pour réduire le bruit, un réseau plus grand ou une récompense qui valorise les éliminations, et une évolution *par équipe* pour le mode Duos.
 
 ---
 
