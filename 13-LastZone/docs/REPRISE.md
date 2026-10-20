@@ -27,7 +27,7 @@ tutoriel, aide), 311 tests, jeu en ligne (GitHub Pages), vidéo de présentation
 README détaillé, description YouTube (`docs/YOUTUBE.md`).
 
 Reste à faire (côté étudiant) :
-- mettre la vidéo sur YouTube, puis remplacer `À COMPLÉTER` par le lien (README racine et `13-LastZone/README.md`) ;
+- (fait) vidéo YouTube : https://www.youtube.com/watch?v=CzY6fPSw8U0 ;
 - écrire la section « 1. Pourquoi ce jeu ? » de « MON EXPÉRIENCE » et confirmer l'IDE ;
 - envoyer le lien du dépôt au professeur.
 

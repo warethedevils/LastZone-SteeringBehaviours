@@ -19,7 +19,7 @@ Avant de filmer : onglet *Cerveaux* → rien à régler ; lance une partie en **
 - 1 min 30 à 2 min maximum (consigne du cours) ; coupe les temps morts.
 - Montre le lien du jeu (GitHub Pages) et du dépôt à la fin, ou dans la description.
 - Description YouTube : IDE utilisé (Claude Code dans l'application Claude), modèle (Claude Sonnet 5.5), lien du jeu, lien du dépôt.
-- Mets le lien de la vidéo dans le README (`À COMPLÉTER`), puis envoie le dépôt au prof par mail.
+- Lien de la vidéo (déjà dans les README) : https://www.youtube.com/watch?v=CzY6fPSw8U0 — puis envoie le dépôt au prof par mail.
 
 ## Vidéo déjà enregistrée
 
