@@ -4,7 +4,8 @@
 
 Battle royale en vue de dessus et en 3D à la première personne, entièrement piloté par des steering behaviors : joueurs, bots à réseau de neurones, véhicules, loups, cerfs, corbeaux — tout est un `Vehicle`, et chaque entité possède un `BehaviorManager`.
 
-- Jeu en ligne : `À COMPLÉTER (lien GitHub Pages ou itch.io)`
+- Jeu en ligne (GitHub Pages) : https://warethedevils.github.io/LastZone-SteeringBehaviours/13-LastZone/
+- Dépôt GitHub : https://github.com/warethedevils/LastZone-SteeringBehaviours
 - Vidéo de présentation (YouTube) : `À COMPLÉTER`
 - Documentation, section **MON EXPÉRIENCE**, outils IA et IDE utilisés : [13-LastZone/README.md](13-LastZone/README.md)
 - Fichiers pour assistants IA : [AGENTS.md](AGENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md), [13-LastZone/CLAUDE.md](13-LastZone/CLAUDE.md)

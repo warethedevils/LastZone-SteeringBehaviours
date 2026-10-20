@@ -6,7 +6,8 @@ Un battle royale complet dans l'esprit des jeux de loot : bus de combat, atterri
 
 | | |
 |---|---|
-| Jeu en ligne (GitHub Pages ou itch.io — **obligatoire**) | `À COMPLÉTER : https://<ton-compte>.github.io/<ton-depot>/13-LastZone/` |
+| Jeu en ligne (GitHub Pages — **obligatoire**) | https://warethedevils.github.io/LastZone-SteeringBehaviours/13-LastZone/ |
+| Dépôt GitHub | https://github.com/warethedevils/LastZone-SteeringBehaviours |
 | Vidéo YouTube de présentation, 1 à 2 minutes (**obligatoire**) | `À COMPLÉTER : https://youtu.be/...` |
 
 Publier sur GitHub Pages : pousser le dépôt sur GitHub, puis *Settings → Pages → Deploy from a branch → `main` / `(root)`*. Le jeu est statique (aucune compilation) : le dossier `13-LastZone` est servi tel quel.
