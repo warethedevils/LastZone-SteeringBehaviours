@@ -9,6 +9,7 @@
 | 🎮 **Jouer en ligne** (GitHub Pages) | https://warethedevils.github.io/LastZone-SteeringBehaviours/13-LastZone/ |
 | 💻 **Dépôt GitHub** | https://github.com/warethedevils/LastZone-SteeringBehaviours |
 | 🎬 **Vidéo de présentation** (YouTube, 2 min) | `À COMPLÉTER : https://youtu.be/...` |
+| 📥 **Fichier de la vidéo** (MP4, voix off et sous-titres) | https://github.com/warethedevils/LastZone-SteeringBehaviours/releases/download/video-v1/LAST-ZONE-presentation.mp4 |
 | 🧪 **Tests** | `npm test` — 310 tests, aucune dépendance |
 
 ---

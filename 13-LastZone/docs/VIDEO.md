@@ -23,6 +23,8 @@ Avant de filmer : onglet *Cerveaux* → rien à régler ; lance une partie en **
 
 ## Vidéo déjà enregistrée
 
+**Fichier prêt à publier sur YouTube** : https://github.com/warethedevils/LastZone-SteeringBehaviours/releases/download/video-v1/LAST-ZONE-presentation.mp4 (2 min 04 : visite guidée avec voix off française, sous-titres, titre d'ouverture et écran de fin avec les liens ; la voix est celle de Windows — tu peux la remplacer par la tienne).
+
 Une visite guidée complète est générée automatiquement par le jeu lui-même (le « joueur » est piloté par l'IA, la mise en scène et les sous-titres sont dans `outils/video/video.js`) : lobby, **menu d'aide**, bus, vue 3D, combat, faune, ordres d'escouade et réanimation, véhicule, Labo des comportements, onglet Cerveaux.
 
 ```bash
@@ -32,6 +34,6 @@ node serve.js
 # ~2 minutes plus tard : video/last-zone-presentation.webm
 ```
 
-- La vidéo est **muette côté voix** : ajoute ta voix (voir le tableau ci-dessus) avec n'importe quel éditeur (Clipchamp, DaVinci Resolve…) ou publie-la telle quelle avec ses sous-titres incrustés.
+- La voix off est générée par `outils/video/voix.ps1` (voix française hors ligne de Windows, textes dans `outils/video/narration.json`), alignée sur les scènes par `outils/video/mixer-voix.js`, puis le montage final (titre, écran de fin) est fait avec VideoDB. Pour mettre **ta** voix, utilise le tableau ci-dessus avec n'importe quel éditeur (Clipchamp, DaVinci Resolve…).
 - Format .webm : YouTube l'accepte directement.
 - Le dossier `video/` est ignoré par git (fichier trop lourd) : la vidéo vit sur YouTube.

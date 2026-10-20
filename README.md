@@ -13,6 +13,7 @@ et **mon projet : LAST ZONE** (dossier [`13-LastZone`](13-LastZone/)).
 | 🎮 Jouer en ligne (GitHub Pages) | https://warethedevils.github.io/LastZone-SteeringBehaviours/13-LastZone/ |
 | 💻 Dépôt | https://github.com/warethedevils/LastZone-SteeringBehaviours |
 | 🎬 Vidéo de présentation (YouTube) | `À COMPLÉTER : https://youtu.be/...` |
+| 📥 Fichier de la vidéo (MP4, 2 min) | https://github.com/warethedevils/LastZone-SteeringBehaviours/releases/download/video-v1/LAST-ZONE-presentation.mp4 |
 | 📖 Documentation complète, **MON EXPÉRIENCE**, outils IA et IDE | [13-LastZone/README.md](13-LastZone/README.md) |
 | 🤖 Fichiers pour assistants IA | [AGENTS.md](AGENTS.md) · [ARCHITECTURE.md](ARCHITECTURE.md) · [13-LastZone/CLAUDE.md](13-LastZone/CLAUDE.md) |
 | 🧪 Tests | `cd 13-LastZone && npm test` (310 tests, aucune dépendance) |
