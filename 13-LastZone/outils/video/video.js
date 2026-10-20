@@ -24,6 +24,12 @@ const Video = {
   captionT: 0,
   saved: null,
   chunks: [],
+  voiceDir: '/video/brut/voix',      // segments .wav générés par outils/video/voix.ps1
+  voiceBuffers: [],
+  voiceQueue: [],
+  voiceBusyUntil: 0,
+  title: false,
+  endCard: false,
 
   // ---------- Utilitaires de mise en scène ----------
 
@@ -103,7 +109,7 @@ const Video = {
     return [
       { // 1. Lobby
         dur: 7,
-        enter() { leaveMatchSafe(); Lobby.tab = 'jouer'; V.say('LAST ZONE — un battle royale où tout se déplace par steering behaviors'); },
+        enter() { leaveMatchSafe(); Lobby.tab = 'jouer'; V.title = true; V.say('LAST ZONE — un battle royale où tout se déplace par steering behaviors'); },
         tick(t) { if (t > 3.5 && V.caption.startsWith('LAST')) V.say('Joueurs, animaux, projectiles : tout est un Vehicle'); }
       },
       { // 2. Réglages : duos + vue 3D
@@ -191,9 +197,14 @@ const Video = {
         dur: 10,
         enter() { leaveMatchSafe(); Lobby.tab = 'cerveaux'; V.say('Onglet Cerveaux : évolution des bots, champion, export / import, défi du champion'); }
       },
-      { // 11. Aide en jeu + fin
+      { // 11. Remerciements
         dur: 7,
         enter() { Lobby.tab = 'jouer'; V.say('Merci ! Jeu en ligne et dépôt GitHub : voir le README'); }
+      },
+      { // 12. Écran de fin (liens)
+        dur: 6,
+        enter() { V.caption = ''; V.endCard = true; },
+        leave() { V.endCard = false; }
       }
     ];
   },
@@ -290,6 +301,90 @@ const Video = {
 
   // ---------- Dessin des sous-titres ----------
 
+  // Titre d'ouverture (3 s) et écran de fin avec les liens : dessinés par le jeu, sans montage externe
+  drawOverlays() {
+    if (this.title && this.t < 3.8) {
+      const a = Math.min(1, this.t / 0.6, (3.8 - this.t) / 0.6);
+      push();
+      translate(view.ox, view.oy);
+      scale(view.scale);
+      textFont(FONT_TITLE);
+      textAlign(CENTER, CENTER);
+      textSize(110);
+      fill(16, 24, 64, 230 * a);
+      text('LAST ZONE', VIEW.w / 2 + 5, 200 + 5);
+      fill(255, 214, 56, 255 * a);
+      text('LAST ZONE', VIEW.w / 2, 200);
+      pop();
+    }
+    if (this.endCard) {
+      const e = Math.min(1, (this.t - this.sceneStart) / 0.8);
+      push();
+      translate(view.ox, view.oy);
+      scale(view.scale);
+      noStroke();
+      fill(5, 10, 30, 255 * e);
+      rect(0, 0, VIEW.w, VIEW.h);
+      textAlign(CENTER, CENTER);
+      textFont(FONT_TITLE);
+      textSize(120);
+      fill(255, 214, 56, 255 * e);
+      text('LAST ZONE', VIEW.w / 2, 190);
+      textFont(FONT_BODY);
+      textStyle(BOLD);
+      textSize(34);
+      fill(255, 255, 255, 255 * e);
+      text('Battle royale à steering behaviors — tout est un Vehicle', VIEW.w / 2, 300);
+      textStyle(NORMAL);
+      textSize(28);
+      fill(155, 208, 255, 255 * e);
+      text('Jeu en ligne : warethedevils.github.io/LastZone-SteeringBehaviours', VIEW.w / 2, 390);
+      text('Code : github.com/warethedevils/LastZone-SteeringBehaviours', VIEW.w / 2, 440);
+      textSize(24);
+      fill(200, 210, 240, 255 * e);
+      text('Fait avec Claude Code (application Claude) — modèle Claude Sonnet 5.5', VIEW.w / 2, 530);
+      pop();
+    }
+  },
+
+  // ---------- Voix off : jouée dans le jeu, donc enregistrée avec l'image ----------
+
+  async loadVoices() {
+    this.voiceBuffers = [];
+    this.voiceQueue = [];
+    this.voiceBusyUntil = 0;
+    if (!sons.ctx) return false;
+    if (sons.ctx.state === 'suspended') await sons.ctx.resume();
+    for (let i = 1; i <= 11; i++) {
+      const res = await fetch(this.voiceDir + '/segment' + String(i).padStart(2, '0') + '.wav');
+      if (!res.ok) return false;
+      this.voiceBuffers.push(await sons.ctx.decodeAudioData(await res.arrayBuffer()));
+    }
+    this.voiceGain = sons.ctx.createGain();
+    this.voiceGain.gain.value = 1.6;
+    this.voiceGain.connect(sons.master);
+    return true;
+  },
+
+  queueVoice(index) {
+    if (this.voiceBuffers[index]) this.voiceQueue.push(index);
+  },
+
+  // Une voix à la fois : si la scène précédente a débordé, la suivante attend la fin
+  updateVoice() {
+    if (this.voiceQueue.length === 0 || !sons.ctx) return;
+    const now = sons.ctx.currentTime;
+    if (now < this.voiceBusyUntil - 0.05) return;
+    const index = this.voiceQueue.shift();
+    const buffer = this.voiceBuffers[index];
+    const source = sons.ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(this.voiceGain);
+    const begin = Math.max(now + 0.3, this.voiceBusyUntil);
+    source.start(begin);
+    this.voiceBusyUntil = begin + buffer.duration + 0.25;
+  },
+
   drawCaption() {
     if (!this.caption) return;
     this.captionT += deltaTime / 1000;
@@ -352,6 +447,8 @@ const Video = {
     profil.data.settings.tutorielFini = true;
     sons.unlock();
     // flux : image du canvas + ambiance sonore du jeu
+    const voices = await this.loadVoices();
+    this.status = voices ? 'voix chargées' : 'voix absentes (vidéo sans voix off)';
     const stream = canvas.captureStream(this.fps);
     const audio = sons.recordingStream && sons.recordingStream();
     if (audio) for (const track of audio.getAudioTracks()) stream.addTrack(track);
@@ -362,6 +459,15 @@ const Video = {
     this.recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 3200000 });
     this.recorder.ondataavailable = e => { if (e.data && e.data.size > 0) this.chunks.push(e.data); };
     this.recorder.start(1000);
+    // second enregistrement en WebM (VP9 + Opus), en secours : même image, même son
+    this.chunks2 = [];
+    this.recorder2 = null;
+    const mime2 = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m));
+    if (mime2 && this.extension === 'mp4') {
+      this.recorder2 = new MediaRecorder(stream, { mimeType: mime2, videoBitsPerSecond: 3200000, audioBitsPerSecond: 128000 });
+      this.recorder2.ondataavailable = e => { if (e.data && e.data.size > 0) this.chunks2.push(e.data); };
+      this.recorder2.start(1000);
+    }
     this.recStart = performance.now();
     this.starts = [];
 
@@ -376,7 +482,7 @@ const Video = {
       const dt = Math.min(100, Math.max(5, now - last));
       last = now;
       window.deltaTime = dt;
-      this.t += dt / 1000;
+      this.t = (now - this.recStart) / 1000;   // temps réel : les scènes durent ce qu'elles doivent, même si des images sont perdues
       this.advance(scenes);
       try {
         if (match && match.joueur && screen === 'match') {
@@ -387,6 +493,8 @@ const Video = {
         }
         draw();
         this.drawCaption();
+        this.drawOverlays();
+        this.updateVoice();
       } catch (e) {
         this.status = 'erreur : ' + e.message;
         console.error(e);
@@ -407,6 +515,7 @@ const Video = {
     this.sceneStart = this.t;
     this.starts.push(Number(((performance.now() - this.recStart) / 1000).toFixed(2)));
     const next = scenes[this.sceneIndex];
+    if (this.sceneIndex < 11) this.queueVoice(this.sceneIndex);
     if (next && next.enter) next.enter();
   },
 
@@ -418,6 +527,11 @@ const Video = {
       try {
         const res = await fetch('/__enregistrer/' + name + '.' + this.extension, { method: 'POST', body: blob });
         this.saved = await res.json();
+        if (this.recorder2) {
+          await new Promise(r => { this.recorder2.onstop = r; this.recorder2.stop(); });
+          const res2 = await fetch('/__enregistrer/' + name + '-secours.webm', { method: 'POST', body: new Blob(this.chunks2, { type: 'video/webm' }) });
+          this.saved2 = await res2.json();
+        }
         this.status = 'terminé';
       } catch (e) {
         this.status = 'échec de l\'envoi : ' + e.message;

@@ -397,7 +397,7 @@ le Labo, où chaque comportement est une flèche.
 - **Modèle IA** : Claude Sonnet 5.5 (`claude-sonnet-5-5`).
 - **Fichiers pour assistants IA** : [`CLAUDE.md`](CLAUDE.md) (ce dossier), [`../AGENTS.md`](../AGENTS.md) et
   [`../ARCHITECTURE.md`](../ARCHITECTURE.md) (règles du dépôt).
-- **Vidéo** : montage avec VideoDB (voix off Windows hors ligne, sous-titres incrustés par le jeu).
+- **Vidéo** : enregistrée et montée par le jeu lui-même (`outils/video/video.js` : mise en scène, sous-titres, titre, écran de fin ; voix off française hors ligne de Windows jouée pendant l'enregistrement). Un montage intermédiaire a été essayé avec VideoDB, mais sa version gratuite ajoute un logo : la version finale n'en dépend pas.
 
 ---
 

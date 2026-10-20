@@ -23,9 +23,9 @@ Avant de filmer : onglet *Cerveaux* → rien à régler ; lance une partie en **
 
 ## Vidéo déjà enregistrée
 
-> **Quel fichier ouvrir ?** Le montage final avec la voix est `video/VIDEO-FINALE-LAST-ZONE.mp4` (en local) ou le lien de téléchargement ci-dessous. L'enregistrement brut (`video/brut/enregistrement-brut-sans-voix.mp4`) ne contient que l'ambiance du jeu, **sans voix**.
+> **Quel fichier ouvrir ?** `video/VIDEO-FINALE-LAST-ZONE.mp4` (en local) ou le lien de téléchargement ci-dessous : image, sous-titres, voix off et écran de fin, **sans filigrane**.
 
-**Fichier prêt à publier sur YouTube** : https://github.com/warethedevils/LastZone-SteeringBehaviours/releases/download/video-v1/LAST-ZONE-presentation.mp4 (2 min 04 : visite guidée avec voix off française, sous-titres, titre d'ouverture et écran de fin avec les liens ; la voix est celle de Windows — tu peux la remplacer par la tienne).
+**Fichier prêt à publier sur YouTube** : https://github.com/warethedevils/LastZone-SteeringBehaviours/releases/download/video-v1/LAST-ZONE-presentation.mp4 (2 min 03 : visite guidée avec voix off française, sous-titres, titre d'ouverture et écran de fin avec les liens ; la voix est celle de Windows — tu peux la remplacer par la tienne).
 
 Une visite guidée complète est générée automatiquement par le jeu lui-même (le « joueur » est piloté par l'IA, la mise en scène et les sous-titres sont dans `outils/video/video.js`) : lobby, **menu d'aide**, bus, vue 3D, combat, faune, ordres d'escouade et réanimation, véhicule, Labo des comportements, onglet Cerveaux.
 
@@ -36,6 +36,6 @@ node serve.js
 # ~2 minutes plus tard : video/last-zone-presentation.webm
 ```
 
-- La voix off est générée par `outils/video/voix.ps1` (voix française hors ligne de Windows, textes dans `outils/video/narration.json`), alignée sur les scènes par `outils/video/mixer-voix.js`, puis le montage final (titre, écran de fin) est fait avec VideoDB. Pour mettre **ta** voix, utilise le tableau ci-dessus avec n'importe quel éditeur (Clipchamp, DaVinci Resolve…).
+- La voix off est générée par `outils/video/voix.ps1` (voix française hors ligne de Windows, textes dans `outils/video/narration.json`, un segment .wav par scène dans `video/brut/voix/`). **Le jeu la joue lui-même pendant l'enregistrement** (une voix à la fois, la suivante attend si la scène précédente déborde) : image, sous-titres, titre, voix et écran de fin sortent donc dans un seul fichier, sans montage externe. `outils/video/mixer-voix.js` permet, si besoin, de produire une piste voix alignée pour un éditeur externe. Pour mettre **ta** voix, utilise le tableau ci-dessus avec n'importe quel éditeur (Clipchamp, DaVinci Resolve…).
 - Format .webm : YouTube l'accepte directement.
 - Le dossier `video/` est ignoré par git (fichier trop lourd) : la vidéo vit sur YouTube.
