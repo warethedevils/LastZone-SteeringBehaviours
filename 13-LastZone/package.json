@@ -1,0 +1,8 @@
+{
+  "name": "lastzone",
+  "private": true,
+  "description": "LAST ZONE — battle royale à steering behaviors (tests Node sans dépendance)",
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\""
+  }
+}
