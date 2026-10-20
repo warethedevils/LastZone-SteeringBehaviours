@@ -109,6 +109,6 @@ test('vue 3D : repère du rendu — le monde (x, y) devient (X, Z) et la hauteur
 
 test('vue 3D : les shaders déclarent brume, lumière et matière', () => {
   const fs = require('fs');
-  const src = fs.readFileSync(require('path').join(__dirname, '..', 'vue3d.js'), 'utf8');
+  const src = fs.readFileSync(require('./loadGame.js').sourcePath('vue3d.js'), 'utf8');
   for (const word of ['uFogColor', 'uFogFar', 'uLight', 'uMaterialColor', 'uSampler', 'isTexture']) assert.ok(src.includes(word), word);
 });

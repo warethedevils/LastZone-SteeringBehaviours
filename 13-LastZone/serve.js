@@ -1,6 +1,6 @@
 // Mini serveur statique (aucune dépendance) : node serve.js  ->  http://localhost:8080
 // Outil de développement : POST /__enregistrer/<nom> (depuis localhost uniquement) écrit un
-// enregistrement vidéo .webm dans le dossier video/ (voir outils/video.js).
+// enregistrement vidéo (.mp4 ou .webm) dans le dossier video/ (voir outils/video/video.js).
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -22,7 +22,7 @@ function isLocal(req) {
 // Enregistre le corps de la requête dans video/<nom>.webm (nom restreint à [a-z0-9-])
 function saveRecording(req, res) {
   const name = decodeURIComponent(req.url.split('/__enregistrer/')[1] || '').replace(/\?.*$/, '');
-  if (!isLocal(req) || !/^[a-z0-9-]{1,60}\.webm$/.test(name)) { res.writeHead(403); return res.end('refusé'); }
+  if (!isLocal(req) || !/^[a-z0-9-]{1,60}\.(webm|mp4)$/.test(name)) { res.writeHead(403); return res.end('refusé'); }
   const dir = path.join(root, 'video');
   fs.mkdirSync(dir, { recursive: true });
   const file = path.join(dir, name);
@@ -42,6 +42,15 @@ http.createServer((req, res) => {
   const url = decodeURIComponent(req.url.split('?')[0]);
   const file = path.join(root, url === '/' ? 'index.html' : url);
   if (!file.startsWith(root)) { res.writeHead(403); return res.end(); }
+  // lecture partielle (Range) : nécessaire pour se déplacer dans une vidéo
+  if (req.headers.range && /.(mp4|webm)$/.test(file) && fs.existsSync(file)) {
+    const size = fs.statSync(file).size;
+    const m = /bytes=(d*)-(d*)/.exec(req.headers.range) || [];
+    const start = m[1] ? Number(m[1]) : 0;
+    const end = m[2] ? Math.min(Number(m[2]), size - 1) : size - 1;
+    res.writeHead(206, { 'Content-Type': types[path.extname(file)], 'Content-Range': 'bytes ' + start + '-' + end + '/' + size, 'Accept-Ranges': 'bytes', 'Content-Length': end - start + 1 });
+    return fs.createReadStream(file, { start, end }).pipe(res);
+  }
   fs.readFile(file, (err, data) => {
     if (err) { res.writeHead(404); return res.end('Not found'); }
     res.writeHead(200, { 'Content-Type': types[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store' });

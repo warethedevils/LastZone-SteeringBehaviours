@@ -11,11 +11,11 @@ const ROOT = path.join(__dirname, '..');
 
 // même ordre que index.html
 const FILES = [
-  'vehicle.js', 'config.js', 'behaviors.js', 'grille.js', 'armes.js', 'reseau.js', 'genome.js',
-  'cerveau.js', 'cerveau_initial.js', 'evolution.js',
-  'chemin.js', 'glow.js', 'arbre.js', 'rocher.js', 'batiment.js', 'mur.js', 'balle.js', 'butin.js',
-  'coffre.js', 'etincelle.js', 'largage.js', 'tempete.js', 'bus.js', 'animal.js', 'loup.js', 'cerf.js', 'corbeau.js', 'vehicule.js', 'combattant.js', 'joueur.js',
-  'bot.js', 'reglages.js', 'tutoriel.js', 'carte.js', 'match.js', 'profil.js', 'vue3d.js', 'vuefps.js'
+  'src/steering/vehicle.js', 'src/config/config.js', 'src/steering/behaviors.js', 'src/monde/grille.js', 'src/monde/armes.js', 'src/ia/reseau.js', 'src/ia/genome.js',
+  'src/ia/cerveau.js', 'src/ia/cerveau_initial.js', 'src/ia/evolution.js',
+  'src/monde/chemin.js', 'src/monde/glow.js', 'src/entites/arbre.js', 'src/entites/rocher.js', 'src/entites/batiment.js', 'src/entites/mur.js', 'src/entites/balle.js', 'src/entites/butin.js',
+  'src/entites/coffre.js', 'src/entites/etincelle.js', 'src/entites/largage.js', 'src/entites/tempete.js', 'src/entites/bus.js', 'src/entites/animal.js', 'src/entites/loup.js', 'src/entites/cerf.js', 'src/entites/corbeau.js', 'src/entites/vehicule.js', 'src/entites/combattant.js', 'src/entites/joueur.js',
+  'src/entites/bot.js', 'src/steering/reglages.js', 'src/monde/tutoriel.js', 'src/monde/carte.js', 'src/monde/match.js', 'src/monde/profil.js', 'src/rendu/vue3d.js', 'src/rendu/vuefps.js'
 ];
 
 function mulberry32(seed) {
@@ -84,7 +84,7 @@ function loadGame(seedValue = 1) {
   sandbox.p5.Vector.random2D = Vec.random2D;
   const ctx = vm.createContext(sandbox);
   for (const file of FILES) {
-    vm.runInContext(fs.readFileSync(path.join(ROOT, file), 'utf8'), ctx, { filename: file });
+    vm.runInContext(fs.readFileSync(path.join(ROOT, file), 'utf8'), ctx, { filename: path.basename(file) });
   }
   const api = vm.runInContext(`({
     Vehicle, BehaviorManager, CONFIG, DEFAULTS, WORLD, VIEW, resetConfig, Behaviors, Grille, RARITES, WEAPONS, MUNITIONS, SOINS,
@@ -100,7 +100,24 @@ function loadGame(seedValue = 1) {
   return api;
 }
 
-const VEHICLE_SOURCE = path.join(ROOT, 'vehicle.js');
+const VEHICLE_SOURCE = path.join(ROOT, 'src', 'steering', 'vehicle.js');
 const ORIGINAL_SOURCE = path.join(ROOT, '..', '4-Wander', 'vehicle.js');
 
-module.exports = { loadGame, mulberry32, VEHICLE_SOURCE, ORIGINAL_SOURCE, ROOT, FILES };
+// Tous les fichiers sources (src/**), pour retrouver un fichier par son nom : sourcePath('bot.js')
+function listSources(dir = path.join(ROOT, 'src'), out = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) listSources(full, out);
+    else if (entry.name.endsWith('.js')) out.push(path.relative(ROOT, full).split(path.sep).join('/'));
+  }
+  return out;
+}
+const SOURCES = listSources();
+function relativeSource(name) {
+  const rel = SOURCES.find(p => path.basename(p) === name);
+  if (!rel) throw new Error('source introuvable : ' + name);
+  return rel;
+}
+function sourcePath(name) { return path.join(ROOT, relativeSource(name)); }
+
+module.exports = { loadGame, mulberry32, VEHICLE_SOURCE, ORIGINAL_SOURCE, ROOT, FILES, SOURCES, relativeSource, sourcePath };

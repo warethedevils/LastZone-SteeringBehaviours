@@ -325,7 +325,7 @@ const Lobby = {
     this.chart(36, 104, 780, 290, [
       { points: offline.map(c => [c[0], c[1]]), color: PALETTE.yellow, label: 'bots à réseau de neurones' },
       { points: offline.map(c => [c[0], c[2]]), color: [255, 110, 110], label: 'bots à règles' }
-    ], { title: 'ENTRAÎNEMENT HORS LIGNE · classement moyen (plus bas = mieux)', empty: 'Courbe disponible après outils/evoluer.js' });
+    ], { title: 'ENTRAÎNEMENT HORS LIGNE · classement moyen (plus bas = mieux)', empty: 'Courbe disponible après outils/ia/evoluer.js' });
     // évolution pendant TES parties
     const history = evolution.history || [];
     this.chart(36, 410, 780, 274, [

@@ -1,12 +1,12 @@
 // Évaluation : des bots à cerveau (réseau de neurones) affrontent des bots à règles
 // dans les mêmes matchs. On compare leur classement moyen et leurs victoires.
 //
-//   node outils/evaluer.js [matchs=20] [fichier.js]
+//   node outils/ia/evaluer.js [matchs=20] [fichier.js]
 // Sans fichier, utilise cerveau_initial.js. Avec un fichier JSON d'individus
 // (produit par evoluer.js), évalue ce champion.
 
 const fs = require('fs');
-const { loadGame } = require('../tests/loadGame.js');
+const { loadGame } = require('../../tests/loadGame.js');
 
 const matches = Number(process.argv[2]) || 20;
 

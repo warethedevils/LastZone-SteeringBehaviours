@@ -3,11 +3,11 @@
 // puis le réseau de neurones apprend à les reproduire par rétropropagation.
 // Résultat : cerveau_initial.js, le point de départ de tous les bots.
 //
-//   node outils/entrainer.js [matchs=14] [epoques=30]
+//   node outils/ia/entrainer.js [matchs=14] [epoques=30]
 
 const fs = require('fs');
 const path = require('path');
-const { loadGame } = require('../tests/loadGame.js');
+const { loadGame } = require('../../tests/loadGame.js');
 
 const matches = Number(process.argv[2]) || 14;
 const epochs = Number(process.argv[3]) || 30;
@@ -89,7 +89,7 @@ let ok = 0;
 for (let i = 0; i < K; i++) ok += confusion[i][i];
 const accuracy = ok / valid.length;
 
-const out = path.join(__dirname, '..', 'cerveau_initial.js');
+const out = path.join(__dirname, '..', '..', 'src', 'ia', 'cerveau_initial.js');
 const payload = {
   version: 1,
   methode: 'imitation',
@@ -97,6 +97,6 @@ const payload = {
   validation: Number(accuracy.toFixed(4)),
   reseau: net.toJSON(3)
 };
-fs.writeFileSync(out, '// Réseau pré-entraîné par imitation (outils/entrainer.js) puis, si outils/evoluer.js a été lancé, perfectionné par neuroévolution.\n'
+fs.writeFileSync(out, '// Réseau pré-entraîné par imitation (outils/ia/entrainer.js) puis, si outils/ia/evoluer.js a été lancé, perfectionné par neuroévolution.\n'
   + 'const CERVEAU_INITIAL = ' + JSON.stringify(payload) + ';\n');
 console.log('écrit :', out, `(${Math.round(fs.statSync(out).size / 1024)} Ko), précision de validation ${(accuracy * 100).toFixed(1)} %`);

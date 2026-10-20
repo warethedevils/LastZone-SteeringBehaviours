@@ -23,7 +23,7 @@ Avant de filmer : onglet *Cerveaux* → rien à régler ; lance une partie en **
 
 ## Vidéo déjà enregistrée
 
-Une visite guidée complète est générée automatiquement par le jeu lui-même (le « joueur » est piloté par l'IA, la mise en scène et les sous-titres sont dans `outils/video.js`) : lobby, **menu d'aide**, bus, vue 3D, combat, faune, ordres d'escouade et réanimation, véhicule, Labo des comportements, onglet Cerveaux.
+Une visite guidée complète est générée automatiquement par le jeu lui-même (le « joueur » est piloté par l'IA, la mise en scène et les sous-titres sont dans `outils/video/video.js`) : lobby, **menu d'aide**, bus, vue 3D, combat, faune, ordres d'escouade et réanimation, véhicule, Labo des comportements, onglet Cerveaux.
 
 ```bash
 node serve.js

@@ -1,7 +1,7 @@
 // Réalisateur de la vidéo de présentation (1 min 50) : joue une visite guidée complète du jeu
 // dans le navigateur — lobby, menu d'aide, bus, vue 3D, combat, faune, ordres d'escouade,
 // réanimation, véhicule, Labo des comportements, onglet Cerveaux — avec des sous-titres,
-// et l'enregistre (image + ambiance sonore) en .webm via MediaRecorder.
+// et l'enregistre (image + ambiance sonore) en .mp4 (ou .webm) via MediaRecorder.
 //
 // Utilisation : lancer `node serve.js`, ouvrir http://localhost:8080/?video puis taper dans la
 // console du navigateur :  Video.start()
@@ -71,14 +71,16 @@ const Video = {
   },
 
   // Grand espace dégagé (sans arbre, rocher ni bâtiment) : une mise en scène lisible
-  openSpot(radius = 170) {
+  openSpot() {
     const c = match.carte;
-    for (let i = 0; i < 600; i++) {
-      const a = random(TWO_PI);
-      const d = random(150, 900);
-      const x = c.cx + Math.cos(a) * d;
-      const y = c.cy + Math.sin(a) * d;
-      if (c.isFree(x, y, radius, 10)) return { x, y };
+    for (const radius of [320, 260, 200, 150]) {
+      for (let i = 0; i < 500; i++) {
+        const a = random(TWO_PI);
+        const d = random(150, 900);
+        const x = c.cx + Math.cos(a) * d;
+        const y = c.cy + Math.sin(a) * d;
+        if (c.isFree(x, y, radius, 10)) return { x, y };
+      }
     }
     return this.freeNear(c.cx, c.cy);
   },
@@ -187,7 +189,7 @@ const Video = {
       },
       { // 10. Cerveaux
         dur: 10,
-        enter() { leaveMatchSafe(); Lobby.tab = 'cerveaux'; V.say('Onglet Cerveaux : courbe d\'apprentissage, champion, export / import, défi du champion'); }
+        enter() { leaveMatchSafe(); Lobby.tab = 'cerveaux'; V.say('Onglet Cerveaux : évolution des bots, champion, export / import, défi du champion'); }
       },
       { // 11. Aide en jeu + fin
         dur: 7,
@@ -305,22 +307,39 @@ const Video = {
     textSize(27);
     textAlign(CENTER, CENTER);
     fill(0, 0, 0, 180 * alpha);
-    text(this.caption, 82, VIEW.h - 90, 1120, 84);
+    text(this.caption, 42, VIEW.h - 90, 940, 84);
     fill(255, 255, 255, 255 * alpha);
-    text(this.caption, 80, VIEW.h - 92, 1120, 84);
+    text(this.caption, 40, VIEW.h - 92, 940, 84);
     textStyle(NORMAL);
     // badge
     textAlign(LEFT, TOP);
     textFont(FONT_TITLE);
     textSize(18);
     fill(255, 214, 56, 230);
-    text('LAST ZONE', VIEW.w - 130, VIEW.h - 118);
+    text('LAST ZONE', 40, VIEW.h - 122);
     pop();
+  },
+
+  // Joue quelques vrais matchs (bots seuls) pour que les courbes d'évolution du lobby contiennent de vraies données
+  async prepare(count = 4) {
+    this.status = 'préparation des courbes';
+    for (let i = 0; i < count; i++) {
+      const m = new Match({ autoplay: true, fighters: 12, evolution });
+      let steps = 0;
+      while (m.state !== 'fin' && steps < 60 * 60 * 8) {
+        for (let k = 0; k < 900 && m.state !== 'fin'; k++) { m.step(1 / 60, null); steps++; }
+        m.events = [];
+        await new Promise(r => setTimeout(r, 0));
+      }
+      this.status = 'préparation ' + (i + 1) + '/' + count;
+    }
+    evolution.breed(12);
+    this.status = 'prêt';
   },
 
   // ---------- Boucle ----------
 
-  async start(name = 'last-zone-presentation') {
+  async start(name = 'last-zone-presentation', limit = null) {
     if (this.running) return;
     this.running = true;
     this.status = 'préparation';
@@ -336,13 +355,17 @@ const Video = {
     const stream = canvas.captureStream(this.fps);
     const audio = sons.recordingStream && sons.recordingStream();
     if (audio) for (const track of audio.getAudioTracks()) stream.addTrack(track);
-    const mime = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m));
+    // MP4 (H.264 + AAC) d'abord : lisible partout et acceptée par les outils de montage
+    const mime = ['video/mp4;codecs=avc1.640028,mp4a.40.2', 'video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m));
+    this.extension = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
     this.chunks = [];
-    this.recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 7000000 });
+    this.recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 3200000 });
     this.recorder.ondataavailable = e => { if (e.data && e.data.size > 0) this.chunks.push(e.data); };
     this.recorder.start(1000);
+    this.recStart = performance.now();
+    this.starts = [];
 
-    const scenes = this.scenes();
+    const scenes = this.scenes().slice(0, limit || 99);
     this.t = 0;
     this.sceneIndex = -1;
     let last = performance.now();
@@ -382,16 +405,18 @@ const Video = {
     if (current && current.leave) current.leave();
     this.sceneIndex++;
     this.sceneStart = this.t;
+    this.starts.push(Number(((performance.now() - this.recStart) / 1000).toFixed(2)));
     const next = scenes[this.sceneIndex];
     if (next && next.enter) next.enter();
   },
 
   finish(name, saved) {
     this.status = 'sauvegarde';
+    this.totalReal = Number(((performance.now() - this.recStart) / 1000).toFixed(2));
     this.recorder.onstop = async () => {
-      const blob = new Blob(this.chunks, { type: 'video/webm' });
+      const blob = new Blob(this.chunks, { type: this.extension === 'mp4' ? 'video/mp4' : 'video/webm' });
       try {
-        const res = await fetch('/__enregistrer/' + name + '.webm', { method: 'POST', body: blob });
+        const res = await fetch('/__enregistrer/' + name + '.' + this.extension, { method: 'POST', body: blob });
         this.saved = await res.json();
         this.status = 'terminé';
       } catch (e) {

@@ -147,11 +147,18 @@ const Ecrans = {
       ['Échap', 'Pause'],
       ['H', 'Cette page']
     ];
-    const draw = (list, x, y0) => list.forEach(([key, text], i) => {
+    const draw = (list, x, y0) => list.forEach(([key, desc], i) => {
       const y = y0 + i * 52;
       Ui.panel(x, y, 150, 38, { color: [30, 44, 104], alpha: 255, radius: 8, edgeWeight: 1 });
       Ui.label(key, x + 75, y + 19, 15, PALETTE.yellow, CENTER, FONT_TITLE, false);
-      Ui.label(text, x + 164, y + 19, 13, PALETTE.white, LEFT, FONT_BODY, false);
+      push();
+      noStroke();
+      textFont(FONT_BODY);
+      textSize(13);
+      textAlign(LEFT, CENTER);
+      fill(...PALETTE.white);
+      text(desc, x + 164, y, 296, 38);          // retour à la ligne : la colonne de droite ne masque plus le texte
+      pop();
     });
     draw(left, 170, 110);
     draw(right, 650, 110);

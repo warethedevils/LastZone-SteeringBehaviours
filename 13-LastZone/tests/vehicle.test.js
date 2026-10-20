@@ -2,9 +2,9 @@ const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
-const { loadGame, VEHICLE_SOURCE, ORIGINAL_SOURCE, ROOT, FILES } = require('./loadGame.js');
+const { loadGame, VEHICLE_SOURCE, ORIGINAL_SOURCE, ROOT, FILES, SOURCES, relativeSource, sourcePath } = require('./loadGame.js');
 
-const UI_FILES = ['ui.js', 'reseauvue.js', 'lobby.js', 'hud.js', 'ecrans.js', 'labo.js', 'labocomportements.js', 'son.js', 'sketch.js'];
+const UI_FILES = ['ui.js', 'reseauvue.js', 'lobby.js', 'hud.js', 'ecrans.js', 'labo.js', 'labocomportements.js', 'son.js', 'sketch.js'].map(relativeSource);
 
 test("vehicle.js : l'API d'origine est conservée et les comportements de base sont dans Vehicle", () => {
   const g = loadGame(1);
@@ -23,12 +23,12 @@ test('index.html charge tous les fichiers logiques dans le même ordre que les t
   const scripts = [...html.matchAll(/<script src="([^"]+)"/g)].map(m => m[1]).filter(s => !s.startsWith('libraries/'));
   assert.deepStrictEqual(scripts.filter(s => !UI_FILES.includes(s)), FILES);
   for (const ui of UI_FILES) assert.ok(scripts.includes(ui), ui);
-  assert.strictEqual(scripts[scripts.length - 1], 'sketch.js');
+  assert.strictEqual(scripts[scripts.length - 1], relativeSource('sketch.js'));
 });
 
 test('chaque fichier du jeu est syntaxiquement valide', () => {
   const vm = require('vm');
-  for (const file of fs.readdirSync(ROOT).filter(f => f.endsWith('.js'))) {
+  for (const file of SOURCES) {
     assert.doesNotThrow(() => new vm.Script(fs.readFileSync(path.join(ROOT, file), 'utf8'), { filename: file }), file);
   }
 });
@@ -37,7 +37,7 @@ test('un fichier par classe d\'entité, toutes héritent de Vehicle', () => {
   const entityFiles = ['arbre', 'rocher', 'batiment', 'mur', 'balle', 'butin', 'coffre', 'etincelle', 'largage',
     'tempete', 'bus', 'combattant', 'joueur', 'bot'];
   for (const name of entityFiles) {
-    const source = fs.readFileSync(path.join(ROOT, name + '.js'), 'utf8');
+    const source = fs.readFileSync(sourcePath(name + '.js'), 'utf8');
     const classes = source.match(/^class \w+ extends \w+/gm) || [];
     assert.strictEqual(classes.length, 1, `${name}.js contient une seule classe d'entité`);
   }
@@ -61,17 +61,17 @@ test('toutes les entités d\'un match en cours sont des Vehicle', () => {
 });
 
 test('behaviors.js ne déplace rien directement (tout passe par applyForce)', () => {
-  const behaviors = fs.readFileSync(path.join(ROOT, 'behaviors.js'), 'utf8');
+  const behaviors = fs.readFileSync(sourcePath('behaviors.js'), 'utf8');
   assert.ok(!/\.pos\.(add|set|x\s*=|y\s*=)/.test(behaviors));
 });
 
 test('les réseaux de neurones ne déplacent jamais directement un bot : ils choisissent un état, le steering fait le reste', () => {
-  const cerveau = fs.readFileSync(path.join(ROOT, 'cerveau.js'), 'utf8');
+  const cerveau = fs.readFileSync(sourcePath('cerveau.js'), 'utf8');
   assert.ok(!/\.pos\b/.test(cerveau) && !/applyForce/.test(cerveau));
 });
 
 test('le debug est piloté par Vehicle.debug, synchronisé avec la case à cocher, sans voler les frappes des contrôles', () => {
-  const sketch = fs.readFileSync(path.join(ROOT, 'sketch.js'), 'utf8');
+  const sketch = fs.readFileSync(sourcePath('sketch.js'), 'utf8');
   assert.ok(sketch.includes('labo.setDebug(Vehicle.debug)'));
   assert.ok(sketch.includes('isTypingTarget'));
 });

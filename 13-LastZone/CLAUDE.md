@@ -2,14 +2,18 @@
 
 Lire d'abord `../AGENTS.md` et `../ARCHITECTURE.md` (règles du dépôt), puis `README.md`.
 
+## Où est quoi
+
+`src/steering` (Vehicle, BehaviorManager, comportements personnalisés, réglages du Labo) · `src/entites` (une classe par fichier) · `src/monde` (Match, carte, armes, profil, tutoriel) · `src/ia` (réseau, cerveau, évolution) · `src/rendu` (3D) · `src/interface` (p5, lobby, HUD) · `tests` · `outils/ia` · `outils/video` · `docs`. Ajouter un fichier source : le placer dans le bon dossier de `src/`, puis le déclarer dans `index.html` **et** dans la liste `FILES` de `tests/loadGame.js` (même ordre ; les fichiers d'interface vont dans `UI_FILES` de `tests/vehicle.test.js`).
+
 ## Règles du projet
 
 - Toute entité visible étend `Vehicle` ; un fichier par entité.
-- Les **comportements de base** (seek, arrive, flee, pursue, evade, wander, separate, align, cohesion, avoid, boundaries, followPath) sont des méthodes de `Vehicle` dans `vehicle.js`. Dans les sous-classes, ne mettre que des comportements **personnalisés** ou des **combinaisons** (les enregistrer avec `BehaviorManager.register(nom, (vehicle, ctx, ...args) => force)`).
+- Les **comportements de base** (seek, arrive, flee, pursue, evade, wander, separate, align, cohesion, avoid, boundaries, followPath) sont des méthodes de `Vehicle` dans `src/steering/vehicle.js`. Dans les sous-classes, ne mettre que des comportements **personnalisés** ou des **combinaisons** (les enregistrer avec `BehaviorManager.register(nom, (vehicle, ctx, ...args) => force)`).
 - Chaque entité a un `BehaviorManager` (`this.behaviors`) : `add`, `remove`, `enable` / `disable`, `setWeight` / `setScale`, `define` / `use` (comportements complexes), `save` / `load` (JSON), `apply(ctx)` (somme pondérée puis `applyForce`).
 - Steering = vitesse désirée − vitesse actuelle, limité à `maxForce`. Ne jamais déplacer une entité directement, toujours `applyForce`.
-- **`vehicle.js` : ne modifier qu'avec l'accord explicite de l'utilisateur.** Accord donné uniquement pour `13-LastZone/vehicle.js` ; aucun autre `vehicle.js` du dépôt ne doit changer.
-- Le réseau de neurones (42 entrées, 15 sorties) ne doit pas changer de forme sans ré-entraînement (`outils/entrainer.js`, `outils/evoluer.js`) ; les nouvelles mécaniques passent par des règles autour du réseau.
+- **`src/steering/vehicle.js` : ne modifier qu'avec l'accord explicite de l'utilisateur.** Accord donné uniquement pour `13-LastZone/src/steering/vehicle.js` ; aucun autre fichier `vehicle.js` du dépôt ne doit changer.
+- Le réseau de neurones (42 entrées, 15 sorties) ne doit pas changer de forme sans ré-entraînement (`outils/ia/entrainer.js`, `outils/ia/evoluer.js`) ; les nouvelles mécaniques passent par des règles autour du réseau.
 
 ## Ajouts récents à connaître
 
@@ -22,7 +26,7 @@ Lire d'abord `../AGENTS.md` et `../ARCHITECTURE.md` (règles du dépôt), puis `
 
 - `npm test` dans ce dossier (Node ≥ 20, `node:test`, aucune dépendance). Chaque nouvelle fonctionnalité a ses tests ; l'aléatoire est injecté (`g.seed`, `g.setRandom`).
 - `tests/loadGame.js` charge les vrais fichiers du jeu avec un p5 minimal : y ajouter tout nouveau fichier (même ordre que `index.html`).
-- Valider le rendu dans le vrai p5.js (navigateur) après un changement visuel ; l'évaluation du réseau : `node outils/evaluer.js 24`.
+- Valider le rendu dans le vrai p5.js (navigateur) après un changement visuel ; l'évaluation du réseau : `node outils/ia/evaluer.js 24`.
 
 ## Pièges connus
 

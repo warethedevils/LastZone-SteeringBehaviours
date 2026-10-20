@@ -1,7 +1,7 @@
 // Ouvrier de calcul pour la neuroévolution parallèle : reçoit un groupe de cerveaux,
 // joue un match complet contre des bots à règles et renvoie les résultats.
 const { parentPort } = require('worker_threads');
-const { loadGame } = require('../tests/loadGame.js');
+const { loadGame } = require('../../tests/loadGame.js');
 
 parentPort.on('message', job => {
   const g = loadGame(job.seed);

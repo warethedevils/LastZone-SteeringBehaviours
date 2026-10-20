@@ -1,15 +1,15 @@
 // Neuroévolution parallèle : la population de cerveaux (réseau + personnalité) joue des
 // matchs mélangés — 12 bots à réseau contre 12 bots à règles — sur plusieurs processus.
 // Les mieux classés se reproduisent (croisement des poids + mutation recuite). Le meilleur
-// cerveau est écrit dans cerveau_initial.js. À lancer après outils/entrainer.js.
+// cerveau est écrit dans cerveau_initial.js. À lancer après outils/ia/entrainer.js.
 //
-//   node outils/evoluer.js [generations=120] [population=48] [tours=2]
+//   node outils/ia/evoluer.js [generations=120] [population=48] [tours=2]
 
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { Worker } = require('worker_threads');
-const { loadGame } = require('../tests/loadGame.js');
+const { loadGame } = require('../../tests/loadGame.js');
 
 const generations = Number(process.argv[2]) || 120;
 const populationSize = Number(process.argv[3]) || 48;
@@ -126,9 +126,9 @@ async function main() {
 
   // courbe d'apprentissage (README, lobby) : classement moyen des réseaux et des règles à chaque génération
   fs.writeFileSync(path.join(__dirname, 'courbe_apprentissage.json'), JSON.stringify({ generations, populationSize, rounds, courbe: history }, null, 1));
-  console.log('courbe écrite dans outils/courbe_apprentissage.json');
+  console.log('courbe écrite dans outils/ia/courbe_apprentissage.json');
 
-  const outFile = path.join(__dirname, '..', 'cerveau_initial.js');
+  const outFile = path.join(__dirname, '..', '..', 'src', 'ia', 'cerveau_initial.js');
   let previous = {};
   try {
     const text = fs.readFileSync(outFile, 'utf8');
@@ -143,7 +143,7 @@ async function main() {
     reseau: champion.reseau.toJSON(3),
     genes: champion.genome.genes
   });
-  fs.writeFileSync(outFile, '// Réseau pré-entraîné par imitation (outils/entrainer.js) puis perfectionné par neuroévolution (outils/evoluer.js).\n'
+  fs.writeFileSync(outFile, '// Réseau pré-entraîné par imitation (outils/ia/entrainer.js) puis perfectionné par neuroévolution (outils/ia/evoluer.js).\n'
     + 'const CERVEAU_INITIAL = ' + JSON.stringify(payload) + ';\n');
   console.log('champion écrit dans', outFile);
   workers.forEach(w => w.terminate());

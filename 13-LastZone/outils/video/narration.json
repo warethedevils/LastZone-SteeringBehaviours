@@ -1,0 +1,16 @@
+{
+  "voix": "Microsoft Hortense Desktop",
+  "segments": [
+    "Voici Last Zone, un battle royale où tout se déplace par steering behaviors.",
+    "Je joue en mode duos, avec une vue en trois D à la première personne.",
+    "Le menu d'aide, touche H, rappelle toutes les commandes : déplacement, tir, ordres d'équipe, et le labo des comportements.",
+    "Le bus de combat survole l'île. Chacun choisit sa zone d'atterrissage, puis c'est la chute libre.",
+    "En vue trois D, les bots esquivent les balles avec sidestep, visent à l'interception avec leadPoint, et évitent les obstacles avec avoid.",
+    "La faune aussi est faite de véhicules : les cerfs fuient en evade, le loup poursuit en pursue mais se fatigue, et les corbeaux volent en boids pour encercler les combats.",
+    "En équipe, la touche T donne des ordres : suivez-moi, avec cohésion, alignement et séparation, puis tenez la position, puis à l'attaque. Un coéquipier tombé se relève en maintenant E.",
+    "Le quad et la jeep se conduisent aussi par steering : une vitesse désirée, une force limitée.",
+    "Le labo des comportements rend le BehaviorManager visible : chaque flèche est une force. On règle les poids, on active ou désactive, on applique à tous les bots et on sauvegarde un comportement complexe.",
+    "Chaque bot a un réseau de neurones, qui évolue à chaque partie. L'onglet Cerveaux permet d'exporter le champion ou de le défier.",
+    "Merci ! Le jeu est en ligne sur GitHub Pages."
+  ]
+}

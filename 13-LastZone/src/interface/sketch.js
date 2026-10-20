@@ -44,10 +44,10 @@ function setup() {
   evolution = new Evolution(storage);
   sons = new Son();
   applySettings();
-  // outil de développement : visite guidée enregistrée (outils/video.js), seulement avec ?video
+  // outil de développement : visite guidée enregistrée (outils/video/video.js), seulement avec ?video
   if (location.search.includes('video')) {
     const script = document.createElement('script');
-    script.src = 'outils/video.js';
+    script.src = 'outils/video/video.js';
     document.head.appendChild(script);
   }
   labo = new Labo(document.body,

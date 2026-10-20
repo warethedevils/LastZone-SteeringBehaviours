@@ -8,8 +8,8 @@
 // construire) ; le déplacement reste calculé par des forces de steering.
 // Les états impossibles (combattre sans ennemi visible...) sont masqués avant le tirage.
 //
-// Le réseau est pré-entraîné par imitation d'un bot à règles (voir outils/entrainer.js)
-// puis perfectionné par neuroévolution (outils/evoluer.js et entre les parties).
+// Le réseau est pré-entraîné par imitation d'un bot à règles (voir outils/ia/entrainer.js)
+// puis perfectionné par neuroévolution (outils/ia/evoluer.js et entre les parties).
 
 class Cerveau {
   static STATES = ['butin', 'errance', 'zone', 'combat', 'fuite', 'soin'];
@@ -55,7 +55,7 @@ class Cerveau {
     return new Cerveau(Genome.random(), Cerveau.newNetwork());
   }
 
-  // Cerveau pré-entraîné (fichier généré par outils/entrainer.js), ou null s'il n'existe pas
+  // Cerveau pré-entraîné (fichier généré par outils/ia/entrainer.js), ou null s'il n'existe pas
   static initial() {
     if (typeof CERVEAU_INITIAL === 'undefined' || !CERVEAU_INITIAL) return null;
     // un fichier généré pour une autre architecture est ignoré (bots à règles jusqu'au prochain entraînement)
