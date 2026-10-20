@@ -160,7 +160,7 @@ const Vue3D = {
     for (const m of match.murs) if (nearEnough(m.pos, 50)) this.wall(m);
     for (const co of match.coffres) if (nearEnough(co.pos, 30)) this.chest(co);
     for (const b of match.butins) if (nearEnough(b.pos, 30)) this.loot(b, time);
-    for (const v of match.vehicules) if (v !== player.vehicle && nearEnough(v.pos, 60)) this.vehicle(v);
+    for (const v of match.vehicules) if ((vue.chase || v !== player.vehicle) && nearEnough(v.pos, 60)) this.vehicle(v);
     for (const f of match.fighters) {
       if (f === player || !f.alive || f.phase === 'bus' || f.phase === 'chute' || f.phase === 'vehicule') continue;
       if (nearEnough(f.pos, 40)) this.fighter(f, time);

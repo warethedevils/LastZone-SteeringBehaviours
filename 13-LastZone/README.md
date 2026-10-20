@@ -148,7 +148,7 @@ Une vraie scène WebGL (p5.js en mode `WEBGL`) : île texturée à partir de la 
 arbres et rochers en volume, brume de distance (shader), éclairage, véhicules, combattants modélisés (jambes,
 torse, tête, arme), faune, tempête en mur violet. L'arme tenue est dessinée au premier plan (recul, lueur de tir,
 rechargement), avec un tableau de bord au volant. Dans le bus et en chute libre, la vue de dessus sert à choisir où
-atterrir. C'est du **rendu** : la simulation (collisions, tirs) reste en 2D dans `Match`.
+atterrir. **En véhicule, la caméra passe en poursuite** (derrière le véhicule, dans l'axe du regard) : on voit la jeep ou le quad rouler, ses passagers, et le HUD affiche son état. C'est du **rendu** : la simulation (collisions, tirs) reste en 2D dans `Match`.
 
 ### Interface et progression
 

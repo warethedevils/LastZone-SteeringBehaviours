@@ -51,6 +51,15 @@ const VueFPS = {
     this.s = Math.sin(yaw);
   },
 
+  // Caméra de poursuite en véhicule : derrière le véhicule, dans la direction du regard, un peu en hauteur,
+  // pour voir le véhicule rouler (la vue depuis l'intérieur ne montrait rien).
+  CHASE_DISTANCE: 150,
+  CHASE_HEIGHT: 44,
+
+  chasePosition(vehicle, yaw, distance = this.CHASE_DISTANCE) {
+    return { pos: { x: vehicle.pos.x - Math.cos(yaw) * distance, y: vehicle.pos.y - Math.sin(yaw) * distance } };
+  },
+
   proj(x, y, z) {
     const dx = x - this.px;
     const dy = y - this.py;
@@ -79,17 +88,20 @@ const VueFPS = {
     if (!opts.terrain || !Vue3D.init()) return this.draw2d(match, player, yaw, opts);
     this.time = opts.time || 0;
     const downed = player.phase === 'terre';
-    this.eye = (downed ? 12 : 30) + (opts.bob || 0);
+    const driving = player.phase === 'vehicule' && !!player.vehicle;
+    this.chase = driving;
+    this.eye = driving ? this.CHASE_HEIGHT : (downed ? 12 : 30) + (opts.bob || 0);
     this.horizon = this.H / 2;
-    this.place(player.phase === 'vehicule' && player.vehicle ? player.vehicle : player, yaw);
+    this.place(driving ? this.chasePosition(player.vehicle, yaw) : player, yaw);
     const storm = match.stormStarted ? match.storm : null;
     const outside = !!storm && !storm.inside(player.pos);
     this.sky(outside);
     Vue3D.render(this, match, player, opts.terrain, { time: this.time, outside });
     image(Vue3D.g, 0, 0, this.W, this.H);
     this.overlays(match, player);
-    if (player.phase === 'vehicule' && player.seat === 0) this.dashboard(player);
-    else if (!downed) this.viewmodel(player, opts);
+    if (driving) {
+      // pas d'arme ni de tableau de bord : on voit le véhicule (la barre d'état est dans le HUD)
+    } else if (!downed) this.viewmodel(player, opts);
     if (downed) {
       push();
       noStroke();
@@ -171,9 +183,10 @@ const VueFPS = {
   draw2d(match, player, yaw, opts = {}) {
     this.time = opts.time || 0;
     const downed = player.phase === 'terre';
-    this.eye = (downed ? 12 : 30) + (opts.bob || 0);
+    const driving = player.phase === 'vehicule' && !!player.vehicle;
+    this.eye = driving ? this.CHASE_HEIGHT : (downed ? 12 : 30) + (opts.bob || 0);
     this.horizon = 330;
-    this.place(player.phase === 'vehicule' && player.vehicle ? player.vehicle : player, yaw);
+    this.place(driving ? this.chasePosition(player.vehicle, yaw) : player, yaw);
     const storm = match.stormStarted ? match.storm : null;
     const outside = !!storm && !storm.inside(player.pos);
 
@@ -191,7 +204,7 @@ const VueFPS = {
     for (const co of match.coffres) if (near(co.pos, 40)) this.addItem(items, co.pos, () => this.chest(co));
     for (const b of match.butins) if (near(b.pos, 30)) this.addItem(items, b.pos, () => this.loot(b, player));
     for (const v of match.vehicules) {
-      if (v === player.vehicle) continue;
+      if (v === player.vehicle && !driving) continue;
       if (near(v.pos, 80)) this.addItem(items, v.pos, () => this.vehicle(v));
     }
     for (const f of match.fighters) {
@@ -208,9 +221,8 @@ const VueFPS = {
     items.sort((a, b) => b.d - a.d);
     for (const it of items) it.draw();
 
-    // joueur dans un véhicule : tableau de bord, sinon arme en main
-    if (player.phase === 'vehicule' && player.seat === 0) this.dashboard(player);
-    else if (!downed) this.viewmodel(player, opts);
+    // en véhicule : caméra de poursuite, on voit le véhicule ; sinon arme en main
+    if (!driving && !downed) this.viewmodel(player, opts);
     if (downed) {
       push();
       noStroke();

@@ -112,3 +112,19 @@ test('vue 3D : les shaders déclarent brume, lumière et matière', () => {
   const src = fs.readFileSync(require('./loadGame.js').sourcePath('vue3d.js'), 'utf8');
   for (const word of ['uFogColor', 'uFogFar', 'uLight', 'uMaterialColor', 'uSampler', 'isTexture']) assert.ok(src.includes(word), word);
 });
+
+test('vue 3D : en véhicule, la caméra de poursuite est derrière lui, dans l\'axe du regard, et le voit droit devant', () => {
+  const vehicle = { pos: { x: 1000, y: 800 } };
+  for (const yaw of [0, 1.2, -2.5]) {
+    const cam = VueFPS.chasePosition(vehicle, yaw);
+    const dist = Math.hypot(cam.pos.x - vehicle.pos.x, cam.pos.y - vehicle.pos.y);
+    assert.ok(Math.abs(dist - VueFPS.CHASE_DISTANCE) < 1e-9);
+    VueFPS.eye = VueFPS.CHASE_HEIGHT;
+    VueFPS.horizon = 360;
+    VueFPS.place({ pos: createVector(cam.pos.x, cam.pos.y) }, yaw);
+    const p = VueFPS.proj(vehicle.pos.x, vehicle.pos.y, 15);
+    assert.ok(Math.abs(p.x - VueFPS.W / 2) < 1e-6, 'le véhicule est au centre horizontal');
+    assert.ok(p.y > VueFPS.horizon && p.y < VueFPS.H, 'et dans la moitié basse de l\'écran');
+    assert.ok(Math.abs(p.d - VueFPS.CHASE_DISTANCE) < 1e-6);
+  }
+});

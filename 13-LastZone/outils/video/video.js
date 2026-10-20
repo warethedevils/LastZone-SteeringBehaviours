@@ -178,9 +178,11 @@ const Video = {
           }
         }
       },
-      { // 8. Véhicule
-        dur: 11,
-        enter() { V.say('Véhicules : quad et jeep — conduire, c\'est aussi du steering (vitesse désirée, force limitée)'); V.stageVehicle(); }
+      { // 8. Véhicule : caméra de poursuite, la jeep roule en rond dans un espace dégagé
+        dur: 13,
+        enter() { V.say('Véhicules : la jeep (3 places) et le quad — conduire, c\'est aussi du steering (vitesse désirée, force limitée)'); V.stageVehicle(); },
+        tick() { const car = V.player() && V.player().vehicle; if (car) car.hp = car.maxHp; },   // la mise en scène ne doit pas détruire la jeep
+        leave() { V.unstageVehicle(); }
       },
       { // 9. Labo des comportements
         dur: 17,
@@ -255,13 +257,42 @@ const Video = {
     const p = this.player();
     this.moveToOpen();
     const spot = this.freeNear(p.pos.x + Math.cos(p.aim) * 90, p.pos.y + Math.sin(p.aim) * 90);
-    let car = match.vehicules.find(v => !v.dead && v.freeSeat >= 0);
-    if (!car) { car = new Vehicule(spot.x, spot.y, 'quad'); match.vehicules.push(car); }
+    let car = match.vehicules.find(v => v.type === 'jeep' && !v.dead && v.freeSeat >= 2);
+    if (!car) { car = new Vehicule(spot.x, spot.y, 'jeep'); match.vehicules.push(car); }
     this.place(car, spot.x, spot.y);
     car.angle = p.aim;
     p.vehicleCooldown = 0;
     p.groundTime = 99;
     match.boardVehicle(p, car);
+    const mate = this.mate();
+    if (mate) { mate.pos.set(car.pos.x, car.pos.y); match.boardVehicle(mate, car); }
+    // le « conducteur » suit des points de passage sur un cercle : il ne descend pas au cœur de la zone
+    this.driveCenter = { x: car.pos.x, y: car.pos.y };
+    this.driveAngle = p.aim;
+    const V = this;
+    p.thinkInVehicle = function (world) {
+      const veh = this.vehicle;
+      if (!veh) return [];
+      let dest = { x: V.driveCenter.x + Math.cos(V.driveAngle) * 170, y: V.driveCenter.y + Math.sin(V.driveAngle) * 170 };
+      if (Math.hypot(veh.pos.x - dest.x, veh.pos.y - dest.y) < 80) {
+        V.driveAngle += 0.8;
+        dest = { x: V.driveCenter.x + Math.cos(V.driveAngle) * 170, y: V.driveCenter.y + Math.sin(V.driveAngle) * 170 };
+      }
+      this.driveContext = {
+        ai: true,
+        destination: createVector(dest.x, dest.y),
+        obstacles: world.grid.query(veh.pos.x, veh.pos.y, 190).map(o => ({ pos: o.pos, r: o.r }))
+      };
+      this.exitRequest = false;
+      return [];
+    };
+  },
+
+  unstageVehicle() {
+    const p = this.player();
+    if (!p) return;
+    delete p.thinkInVehicle;
+    if (p.vehicle) match.leaveVehicle(p);
   },
 
   stageLab() {
@@ -487,8 +518,10 @@ const Video = {
       try {
         if (match && match.joueur && screen === 'match') {
           const p = match.joueur;
-          const diff = Math.atan2(Math.sin(p.aim - viewYaw), Math.cos(p.aim - viewYaw));
-          viewYaw += diff * 0.25;
+          // en véhicule, la caméra de poursuite suit le cap du véhicule ; sinon le regard du joueur
+          const ref = p.phase === 'vehicule' && p.vehicle ? p.vehicle.angle : p.aim;
+          const diff = Math.atan2(Math.sin(ref - viewYaw), Math.cos(ref - viewYaw));
+          viewYaw += diff * 0.12;
           if (p.alive) p.invulnerable = Math.max(p.invulnerable, 5);
         }
         draw();
