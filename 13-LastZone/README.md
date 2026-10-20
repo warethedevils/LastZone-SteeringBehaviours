@@ -306,7 +306,7 @@ ré-entraîner avec `outils/ia/evoluer.js` est la suite logique.
 | `node outils/ia/entrainer.js` | pré-entraînement par imitation |
 | `node outils/ia/evoluer.js [générations] [population] [tours]` | neuroévolution parallèle (long : plusieurs dizaines de minutes) |
 | `node outils/ia/evaluer.js [matchs]` | réseau contre règles |
-| `http://localhost:8080/?video` puis `Video.start()` | enregistre la visite guidée (voir `docs/VIDEO.md`) |
+| `http://localhost:8080/?video` puis `Studio.render()` | rend la visite guidée en MP4 (image par image, 30 fps exacts, voix off) — voir `docs/VIDEO.md` |
 
 ---
 
@@ -397,7 +397,7 @@ le Labo, où chaque comportement est une flèche.
 - **Modèle IA** : Claude Sonnet 5.5 (`claude-sonnet-5-5`).
 - **Fichiers pour assistants IA** : [`CLAUDE.md`](CLAUDE.md) (ce dossier), [`../AGENTS.md`](../AGENTS.md) et
   [`../ARCHITECTURE.md`](../ARCHITECTURE.md) (règles du dépôt).
-- **Vidéo** : enregistrée et montée par le jeu lui-même (`outils/video/video.js` : mise en scène, sous-titres, titre, écran de fin ; voix off française hors ligne de Windows jouée pendant l'enregistrement). Un montage intermédiaire a été essayé avec VideoDB, mais sa version gratuite ajoute un logo : la version finale n'en dépend pas.
+- **Vidéo** : enregistrée et montée par le jeu lui-même (`outils/video/video.js` : mise en scène, sous-titres, titre, écran de fin ; `outils/video/studio.js` : rendu image par image en H.264 + AAC avec la voix off française hors ligne de Windows). Un montage intermédiaire a été essayé avec VideoDB, mais sa version gratuite ajoute un logo : la version finale n'en dépend pas.
 
 ---
 

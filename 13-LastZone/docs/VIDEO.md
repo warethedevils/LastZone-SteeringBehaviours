@@ -32,9 +32,11 @@ Une visite guidée complète est générée automatiquement par le jeu lui-même
 ```bash
 node serve.js
 # ouvrir http://localhost:8080/?video puis, dans la console du navigateur (F12) :
-#   Video.start()
-# ~2 minutes plus tard : video/last-zone-presentation.webm
+#   Studio.render()          # rendu hors ligne, image par image (recommandé)
+# ~1 minute plus tard : video/video-finale-last-zone.mp4
 ```
+
+**Pourquoi un rendu hors ligne ?** L'enregistrement en temps réel (`Video.start()`, MediaRecorder) saccade dès que le navigateur ralentit ou que l'onglet passe en arrière-plan. `Studio.render()` (`outils/video/studio.js`) avance le jeu d'exactement 1/30 s par image, dessine, encode en H.264 (WebCodecs) puis assemble un MP4 (H.264 + AAC, muxeur écrit pour le projet) avec la voix off et une légère ambiance : **30 images par seconde exactes**, des **fondus** entre les scènes, quelle que soit la vitesse de l'ordinateur.
 
 - La voix off est générée par `outils/video/voix.ps1` (voix française hors ligne de Windows, textes dans `outils/video/narration.json`, un segment .wav par scène dans `video/brut/voix/`). **Le jeu la joue lui-même pendant l'enregistrement** (une voix à la fois, la suivante attend si la scène précédente déborde) : image, sous-titres, titre, voix et écran de fin sortent donc dans un seul fichier, sans montage externe. `outils/video/mixer-voix.js` permet, si besoin, de produire une piste voix alignée pour un éditeur externe. Pour mettre **ta** voix, utilise le tableau ci-dessus avec n'importe quel éditeur (Clipchamp, DaVinci Resolve…).
 - Format .webm : YouTube l'accepte directement.

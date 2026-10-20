@@ -113,7 +113,7 @@ const Video = {
         tick(t) { if (t > 3.5 && V.caption.startsWith('LAST')) V.say('Joueurs, animaux, projectiles : tout est un Vehicle'); }
       },
       { // 2. Réglages : duos + vue 3D
-        dur: 6,
+        dur: 5,
         enter() {
           const s = profil.data.settings;
           s.teamSize = 2; s.camera = 'joueur'; s.fighters = 24; s.championDuel = false;
@@ -200,11 +200,11 @@ const Video = {
         enter() { leaveMatchSafe(); Lobby.tab = 'cerveaux'; V.say('Onglet Cerveaux : évolution des bots, champion, export / import, défi du champion'); }
       },
       { // 11. Remerciements
-        dur: 7,
+        dur: 5.5,
         enter() { Lobby.tab = 'jouer'; V.say('Merci ! Jeu en ligne et dépôt GitHub : voir le README'); }
       },
       { // 12. Écran de fin (liens)
-        dur: 6,
+        dur: 5,
         enter() { V.caption = ''; V.endCard = true; },
         leave() { V.endCard = false; }
       }
@@ -578,6 +578,13 @@ const Video = {
     this.recorder.stop();
   }
 };
+
+// Le rendu hors ligne (image par image) est dans studio.js
+{
+  const script = document.createElement('script');
+  script.src = 'outils/video/studio.js';
+  document.head.appendChild(script);
+}
 
 function leaveMatchSafe() {
   if (screen === 'match') leaveMatch();
