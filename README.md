@@ -9,8 +9,9 @@ et **mon projet : LAST ZONE** (dossier [`13-LastZone`](13-LastZone/)).
 
 ## Mon projet : LAST ZONE
 
-> Un battle royale en vue de dessus et en 3D à la première personne, où **tout ce qui bouge est un `Vehicle`**
-> piloté par des steering behaviors, et dont les adversaires sont des **bots à réseau de neurones qui évoluent**.
+Voici mon projet de steering behaviors : **LAST ZONE**, un battle royale (vue de dessus et vue 3D à la première personne) dans lequel tout ce qui bouge est un `Vehicle` piloté par des steering behaviors. Chaque entité possède un `BehaviorManager`, et les bots ont un réseau de neurones qui évolue d’une partie à l’autre.
+
+Le README du dossier [`13-LastZone`](13-LastZone/README.md) détaille l’architecture, les comportements utilisés et ma section « MON EXPÉRIENCE » (raisons du choix du jeu, réglages, difficultés et résolutions, outils). J’ai utilisé Claude Code (application Claude) avec le modèle Claude Sonnet 5.5 ; les fichiers pour assistants IA sont `CLAUDE.md`, `AGENTS.md` et `ARCHITECTURE.md`. Le projet compte 311 tests automatisés (`npm test`).
 
 | | |
 |---|---|
